@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.BeForever.guide.dao.GuideDao">
+
+    <resultMap id="guide" type="Guide">
+        <id property="id" column="GUIDE_ID"/>
+        <result property="name" column="GUIDE_NAME"/>
+        <result property="address" column="GUIDE_ADDRESS"/>
+        <result property="outline" column="GUIDE_OUTLINE"/>
+        <result property="tel" column="GUIDE_TEL"/>
+        <result property="openTime" column="GUIDE_OPENTIME"/>
+        <result property="closeTime" column="GUIDE_CLOSETIME"/>
+        <result property="history" column="GUIDE_HISTORY"/>
+        <result property="features" column="GUIDE_FEATURES"/>
+        <result property="pictures" column="GUIDE_PICTURES"/>
+        <result property="hit" column="GUIDE_HIT"/>
+    </resultMap>
+
+    <select id="getGuide" resultMap="guide">
+        SELECT
+            GUIDE_ID,
+            GUIDE_NAME,
+            GUIDE_ADDRESS,
+            GUIDE_OUTLINE,
+            GUIDE_TEL,
+            GUIDE_OPENTIME,
+            GUIDE_CLOSETIME,
+            GUIDE_HISTORY,
+            GUIDE_FEATURES,
+            GUIDE_PICTURES,
+            GUIDE_HIT
+        FROM T_GUIDE
+        WHERE GUIDE_ID = #{id}
+    </select>
+
+    <select id="listGuide" resultMap="guide">
+        SELECT *
+        FROM
+        (
+        SELECT
+        A.*,
+        ROWNUM RN
+        FROM (SELECT
+        GUIDE_ID,
+        GUIDE_NAME,
+        GUIDE_OUTLINE,
+        GUIDE_PICTURES,
+        GUIDE_HIT
+        FROM T_GUIDE
+        WHERE ENABLED = 1
+        <if test="name != null">
+            AND GUIDE_NAME LIKE concat(concat('%',#{name}),'%')
+        </if>
+        ) A
+        WHERE ROWNUM &lt;= #{to}
+        )
+        WHERE RN &gt;= #{from}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM T_GUIDE
+        WHERE ENABLED = 1
+        <if test="name != null">
+            AND GUIDE_NAME LIKE concat(concat('%',#{name}),'%')
+        </if>
+    </select>
+
+    <update id="updateHit">
+        UPDATE T_GUIDE
+        SET GUIDE_HIT = GUIDE_HIT + 1
+        WHERE GUIDE_ID = #{id}
+    </update>
+</mapper>

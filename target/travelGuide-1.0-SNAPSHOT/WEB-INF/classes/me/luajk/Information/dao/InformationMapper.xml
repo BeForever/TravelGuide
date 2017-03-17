@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.luajk.Information.dao.InformationDao">
+
+    <resultMap id="information" type="Information">
+        <id property="id" column="INFORMATION_ID"/>
+        <result property="time" column="INFORMATION_TIME"/>
+        <result property="title" column="INFORMATION_TITLE"/>
+        <result property="content" column="INFORMATION_CONTENT"/>
+        <result property="source" column="INFORMATION_SOURCE"/>
+        <association property="guide" javaType="Guide" resultMap="guide">
+        </association>
+    </resultMap>
+
+    <resultMap id="guide" type="Guide">
+        <id property="id" column="GUIDE_ID"/>
+        <result property="name" column="GUIDE_NAME"/>
+        <result property="address" column="GUIDE_ADDRESS"/>
+        <result property="outline" column="GUIDE_OUTLINE"/>
+        <result property="tel" column="GUIDE_TEL"/>
+        <result property="openTime" column="GUIDE_OPENTIME"/>
+        <result property="closeTime" column="GUIDE_CLOSETIME"/>
+        <result property="history" column="GUIDE_HISTORY"/>
+        <result property="features" column="GUIDE_FEATURES"/>
+        <result property="pictures" column="GUIDE_PICTURES"/>
+    </resultMap>
+
+    <!--<select id="getInformation" resultMap="information">-->
+    <!--SELECT-->
+    <!--INFORMATION_ID,-->
+    <!--INFORMATION_TIME,-->
+    <!--INFORMATION_TITLE,-->
+    <!--INFORMATION_CONTENT,-->
+    <!--INFORMATION_SOURCE,-->
+    <!--T_GUIDE.GUIDE_ID,-->
+    <!--GUIDE_NAME,-->
+    <!--GUIDE_ADDRESS,-->
+    <!--GUIDE_OUTLINE,-->
+    <!--GUIDE_TEL,-->
+    <!--GUIDE_OPENTIME,-->
+    <!--GUIDE_CLOSETIME,-->
+    <!--GUIDE_HISTORY,-->
+    <!--GUIDE_FEATURES,-->
+    <!--GUIDE_PICTURES-->
+    <!--FROM T_INFORMATION-->
+    <!--LEFT JOIN T_GUIDE ON T_INFORMATION.GUIDE_ID = T_GUIDE.GUIDE_ID-->
+    <!--WHERE INFORMATION_ID = #{id}-->
+    <!--</select>-->
+
+    <select id="listInformation" resultMap="information">
+        SELECT *
+        FROM
+        (
+        SELECT
+        A.*,
+        ROWNUM RN
+        FROM (SELECT
+        INFORMATION_ID,
+        INFORMATION_TIME,
+        INFORMATION_TITLE,
+        INFORMATION_CONTENT,
+        INFORMATION_SOURCE,
+        T_GUIDE.GUIDE_ID,
+        GUIDE_NAME,
+        GUIDE_ADDRESS,
+        GUIDE_OUTLINE,
+        GUIDE_TEL,
+        GUIDE_OPENTIME,
+        GUIDE_CLOSETIME,
+        GUIDE_HISTORY,
+        GUIDE_FEATURES,
+        GUIDE_PICTURES
+        FROM T_INFORMATION
+        LEFT JOIN T_GUIDE ON T_INFORMATION.GUIDE_ID = T_GUIDE.GUIDE_ID
+        WHERE 1 = 1
+        <if test="name != null">
+            AND T_GUIDE.GUIDE_NAME LIKE concat(concat('%',#{name}),'%')
+        </if>
+        ) A
+        WHERE ROWNUM &lt;= #{to}
+        )
+        WHERE RN &gt;= #{from}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM T_INFORMATION
+        LEFT JOIN T_GUIDE ON T_INFORMATION.GUIDE_ID = T_GUIDE.GUIDE_ID
+        WHERE 1 = 1
+        <if test="name != null">
+            AND T_GUIDE.GUIDE_NAME LIKE concat(concat('%',#{name}),'%')
+        </if>
+    </select>
+
+</mapper>

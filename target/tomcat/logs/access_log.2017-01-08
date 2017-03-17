@@ -1,0 +1,10 @@
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:40 +0800] "GET /travelGuide/guideList.do HTTP/1.1" 200 7255 http-bio-8080-exec-22 49
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:40 +0800] "GET /travelGuide/css/pagination.css HTTP/1.1" 200 1573 http-bio-8080-exec-23 34
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:40 +0800] "GET /travelGuide/images/logo.png HTTP/1.1" 200 66811 http-bio-8080-exec-24 2
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:44 +0800] "GET /travelGuide/userDetail.do HTTP/1.1" 200 7484 http-bio-8080-exec-24 9
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:44 +0800] "GET /travelGuide/images/logo.png HTTP/1.1" 200 66811 http-bio-8080-exec-24 18
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:44 +0800] "GET /travelGuide/images/photo.jpg HTTP/1.1" 200 5454 http-bio-8080-exec-26 3
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:44 +0800] "GET /travelGuide/images/bac.jpg HTTP/1.1" 200 213112 http-bio-8080-exec-27 8
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:44 +0800] "GET /travelGuide/images/bigbac.jpg HTTP/1.1" 200 872901 http-bio-8080-exec-22 35
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:47 +0800] "GET /travelGuide/contact.do HTTP/1.1" 200 6610 http-bio-8080-exec-24 4
+0:0:0:0:0:0:0:1 - - [08/Jan/2017:01:21:47 +0800] "GET /travelGuide/images/logo.png HTTP/1.1" 200 66811 http-bio-8080-exec-24 3

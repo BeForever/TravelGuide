@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.luajk.comment.dao.CommentDao">
+
+    <resultMap id="comment" type="Comment">
+        <id property="id" column="COMMENT_ID"/>
+        <result property="time" column="COMMENT_TIME"/>
+        <result property="content" column="COMMENT_CONTENT"/>
+        <result property="approval" column="COMMENT_APPROVAL"/>
+        <result property="disapproval" column="COMMENT_DISAPPROVAL"/>
+        <result property="type" column="COMMENT_TYPE"/>
+        <result property="parent" column="PARENT_ID"/>
+        <association property="user" javaType="User" resultMap="user">
+        </association>
+    </resultMap>
+
+    <resultMap id="user" type="User">
+        <id property="id" column="USER_ID"/>
+        <result property="password" column="USER_PASSWORD"/>
+        <result property="username" column="USER_USERNAME"/>
+        <result property="realName" column="USER_REALNAME"/>
+        <result property="nickName" column="USER_NICKNAME"/>
+        <result property="sex" column="USER_SEX"/>
+        <result property="email" column="USER_EMAIL"/>
+        <result property="phone" column="USER_PHONE"/>
+        <result property="birthDate" column="USER_BIRTHDATE"/>
+        <result property="photo" column="USER_PHOTO"/>
+    </resultMap>
+
+    <select id="listComment" resultMap="comment">
+        SELECT
+            T_COMMENT.*,
+            USER_USERNAME,
+            USER_PASSWORD,
+            USER_REALNAME,
+            USER_NICKNAME,
+            USER_SEX,
+            USER_EMAIL,
+            USER_PHONE,
+            USER_BIRTHDATE,
+            USER_PHOTO
+        FROM T_COMMENT
+            LEFT JOIN T_USER ON T_COMMENT.USER_ID = T_USER.USER_ID
+        START WITH COMMENT_ID IN
+                   (SELECT COMMENT_ID
+                    FROM
+                        (
+                            SELECT
+                                A.*,
+                                ROWNUM RN
+                            FROM (SELECT COMMENT_ID
+                                  FROM T_COMMENT
+                                  WHERE PASS &lt; 2 AND PARENT_ID = #{guide}
+                                  ORDER BY COMMENT_TYPE ASC, COMMENT_TIME DESC
+                                 ) A
+                            WHERE ROWNUM &lt;= #{to}
+                        )
+                    WHERE RN &gt;= #{from})
+        CONNECT BY PRIOR COMMENT_ID = PARENT_ID
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM T_COMMENT
+        WHERE PASS &lt; 2 AND PARENT_ID = #{guide}
+    </select>
+
+    <insert id="addComment">
+        INSERT INTO T_COMMENT (COMMENT_ID, COMMENT_TIME, COMMENT_CONTENT, COMMENT_APPROVAL, COMMENT_DISAPPROVAL, COMMENT_TYPE, PARENT_ID, USER_ID, PASS)
+        VALUES
+            (#{id}, #{time}, #{content}, #{approval}, #{disapproval}, #{type}, #{parent}, #{user.id}, 0)
+    </insert>
+
+    <update id="deleteComment">
+        UPDATE T_COMMENT
+        SET PASS = 2
+        WHERE COMMENT_ID = #{id}
+    </update>
+</mapper>

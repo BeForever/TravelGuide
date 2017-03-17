@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.luajk.Information.dao.InformationDao">
+
+    <resultMap id="information" type="Information">
+        <id property="id" column="INFORMATION_ID"/>
+        <result property="time" column="INFORMATION_TIME"/>
+        <result property="title" column="INFORMATION_TITLE"/>
+        <result property="content" column="INFORMATION_CONTENT"/>
+        <result property="source" column="INFORMATION_SOURCE"/>
+    </resultMap>
+
+    <select id="listInformation" resultMap="information">
+        SELECT *
+        FROM
+            (
+                SELECT
+                    A.*,
+                    ROWNUM RN
+                FROM (SELECT
+                          INFORMATION_ID,
+                          INFORMATION_TIME,
+                          INFORMATION_TITLE,
+                          INFORMATION_CONTENT,
+                          INFORMATION_SOURCE
+                      FROM T_INFORMATION
+                      WHERE GUIDE_ID = #{guide}
+                     ) A
+                WHERE ROWNUM &lt;= #{to}
+            )
+        WHERE RN &gt;= #{from}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM T_INFORMATION
+        WHERE GUIDE_ID = #{guide}
+    </select>
+
+</mapper>

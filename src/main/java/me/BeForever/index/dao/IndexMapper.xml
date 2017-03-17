@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.BeForever.index.dao.IndexDao">
+
+    <resultMap id="guide" type="Guide">
+        <id property="id" column="GUIDE_ID"/>
+        <result property="name" column="GUIDE_NAME"/>
+        <result property="address" column="GUIDE_ADDRESS"/>
+        <result property="outline" column="GUIDE_OUTLINE"/>
+        <result property="tel" column="GUIDE_TEL"/>
+        <result property="openTime" column="GUIDE_OPENTIME"/>
+        <result property="closeTime" column="GUIDE_CLOSETIME"/>
+        <result property="history" column="GUIDE_HISTORY"/>
+        <result property="features" column="GUIDE_FEATURES"/>
+        <result property="pictures" column="GUIDE_PICTURES"/>
+        <result property="hit" column="GUIDE_HIT"/>
+    </resultMap>
+
+    <select id="listPictures" resultMap="guide">
+        SELECT
+            GUIDE_ID,
+            GUIDE_NAME,
+            GUIDE_PICTURES
+        FROM T_GUIDE
+        WHERE ENABLED = 1
+    </select>
+
+    <select id="top3Guide" resultMap="guide">
+        SELECT *
+        FROM
+            (SELECT
+                 A.*,
+                 ROWNUM RN
+             FROM (SELECT
+                       GUIDE_ID,
+                       GUIDE_NAME,
+                       GUIDE_OUTLINE,
+                       GUIDE_PICTURES,
+                       GUIDE_HIT
+                   FROM T_GUIDE
+                   WHERE ENABLED = 1
+                   ORDER BY GUIDE_HIT DESC
+                  ) A
+             WHERE ROWNUM &lt;= 3
+            )
+        WHERE RN &gt;= 1
+    </select>
+
+    <select id="random3Guide" resultMap="guide" statementType="STATEMENT">
+        SELECT *
+        FROM (SELECT
+                  D.*,
+                  ROWNUM RN
+              FROM (SELECT *
+                    FROM (
+                        SELECT
+                            B.GUIDE_ID,
+                            B.GUIDE_NAME,
+                            B.GUIDE_OUTLINE,
+                            B.GUIDE_PICTURES,
+                            B.GUIDE_HIT
+                        FROM (
+                                 SELECT
+                                     A.*,
+                                     ROWNUM RNA
+                                 FROM (SELECT
+                                           GUIDE_ID,
+                                           GUIDE_NAME,
+                                           GUIDE_OUTLINE,
+                                           GUIDE_PICTURES,
+                                           GUIDE_HIT
+                                       FROM T_GUIDE
+                                       WHERE ENABLED = 1
+                                       ORDER BY GUIDE_HIT DESC
+                                      ) A) B
+                        WHERE RNA &gt; 3
+                        ORDER BY DBMS_RANDOM.value)) D
+        )
+        WHERE RN &lt;= 3
+    </select>
+
+</mapper>
