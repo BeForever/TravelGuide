@@ -12,4 +12,5 @@
 
 * [web.xml](https://github.com/BeForever/TravelGuide/blob/master/src/main/webapp/WEB-INF/web.xml)
 
-                                                                    BY:BeForever 17th Mar. 2017
+                                                                    BY:BeForever 17th Mar. 2017~
+ 
